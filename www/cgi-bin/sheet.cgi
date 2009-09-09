@@ -37,34 +37,48 @@ print "</title>";
 print <<END_HTML;
 <HTML>
 <HEAD>
-<TITLE>Dynamically add Textbox, Radio, Button in html Form using JavaScript</TITLE>
+<TITLE> Add/Remove dynamic rows in HTML table </TITLE>
 <SCRIPT language="javascript">
-function add(type) {
-//Create an input type dynamically.
-var element = document.createElement("input");
-//Assign different attributes to the element.
-element.setAttribute("type",type);
-element.setAttribute("value", type);
-element.setAttribute("name", type);
-var foo = document.getElementById("fooBar");
-//Append the element in page (in span).
-foo.appendChild(element);
-}
-</SCRIPT>
+function addRow(tableID) {
+       var table = document.getElementById(tableID);
+       var rowCount = table.rows.length;
+       var row = table.insertRow(rowCount);
+       var cell1 = row.insertCell(0);
+      	  var element1 = document.createElement("input");
+           element1.type = "checkbox";
+			  cell1.appendChild(element1);
+           var cell2 = row.insertCell(1);
+           cell2.innerHTML = rowCount + 1;
+           var cell3 = row.insertCell(2);
+           var element2 = document.createElement("input");
+           element2.type = "text";
+           cell3.appendChild(element2);
+                  }
+function deleteRow(tableID) {
+          try {
+          var table = document.getElementById(tableID);
+          var rowCount = table.rows.length;
+          for(var i=0; i<rowCount; i++) {
+          var row = table.rows[i];
+          var chkbox = row.cells[0].childNodes[0];
+               if(null != chkbox && true == chkbox.checked) {
+                   table.deleteRow(i);
+                   rowCount--;
+                   i--;
+               }
+
+          }
+          }catch(e) {
+              alert(e);
+           }
+        }
+ 
+   </SCRIPT>
 </HEAD>
 <BODY>
-<FORM>
-<H2>Dynamically add element in form.</H2>
-Select the element and hit Add to add it in form.
-<BR/>
-<SELECT name="element">
-<OPTION value="button">Button</OPTION>
-<OPTION value="text">Textbox</OPTION>
-<OPTION value="radio">Radio</OPTION>
-</SELECT>
-<INPUT type="button" value="Add" onclick="add(document.forms[0].element.value)"/>
-<span id="fooBar">&nbsp;</span>
-</FORM>
+   <INPUT type="button" value="Add Row" onclick="addRow('sessTable')" />
+
+   <INPUT type="button" value="Delete Row" onclick="deleteRow('sessTable')" />
 </BODY>
 </HTML>
 END_HTML
@@ -84,7 +98,7 @@ print '<form action="ask.cgi" method="post">';
 #</html>
 #END_HTML
 
-print '<table border="1">';
+print '<table id="sessTable" border="1">';
 print "<tr>";
 print "<td>";
 print "Session Name</td>";
@@ -114,7 +128,7 @@ if($everyline =~ /^Modules\s\w+\W(.+)/) {
 #print $3;
 }
 
-print "<tr>";
+print '<tr id="sessCh'.$i.'">';
 print '<td id="sessNm'.$i.'">'.$session[$i].'</td>';
 print '<td id="sessDt'.$i.'">'.$start[$i].$start1[$i].'</td>';
 print '<td id="sessMd'.$i.'">'.$module[$i].'</td>';
